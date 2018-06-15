@@ -45,7 +45,7 @@ def isOverlap(tempstr,teststr,position):
     subteststr=teststr[:len(subtempstr)]
     #print(subtempstr)
     #print(subteststr)
-    if subtempstr == subteststr:
+    if subtempstr == subteststr and len(subtempstr) >= 3:
         return True
     else:
         return False
@@ -57,24 +57,27 @@ totalvalues = resdict.values()
 #print(totalvalues)  
 
 outfile =open("overlapgraph_result.txt","w")
+matched=[]
 
-def findmatching(totalkeys,tempseqid,tempseq):
-    for key in list(totalkeys)[1:]:
-        seqval = resdict[key]
-        if(seqval != tempseq):
-            cchar = seqval[1:2]
-            totalpos = searchAll(tempseq,cchar)
-            for pos in totalpos:
-                if isOverlap(tempseq,seqval,pos):
-                    outfile.write(tempseqid+" "+key+"\n")
-                    break
-            
-for i in range(len(totalkeys)):
-    #print(i)
-    tempseqid = list(totalkeys)[i]
+def findmatching(tempseqid,seqid):
     tempseq = resdict[tempseqid]
-    #print("id ",tempseqid)
-    #print("seq ",tempseq)
-    findmatching(totalkeys,tempseqid,tempseq)
+    seq = resdict[seqid]
 
+    if(tempseq != seq):
+        cchar = seq[1:2]
+        totalpos = searchAll(tempseq,cchar)
+        for pos in totalpos:
+            if isOverlap(tempseq,seq,pos):
+                matched.append(tempseqid+" "+seqid+"\n")
+                break
+            
+for tempseqid in totalkeys:
+    tempseq = resdict[tempseqid]
+    for seqid in totalkeys:
+        seq = resdict[seqid]
+        if tempseqid != seqid:
+            findmatching(tempseqid,seqid)
+
+
+outfile.writelines(matched)
 outfile.close()    

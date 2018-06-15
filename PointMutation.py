@@ -13,4 +13,4 @@ for i,val in enumerate(temp):
 
 
 
-print(count)
+print(pos)
